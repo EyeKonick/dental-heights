@@ -10,6 +10,7 @@ export interface ChatAction {
   href: string;
   external?: boolean;
   icon?: 'phone' | 'messenger' | 'directions' | 'calendar' | 'mail' | 'arrow';
+  service?: string;
 }
 
 export interface ChatReply {
@@ -216,6 +217,12 @@ export function getBotReply(rawInput: string): ChatReply {
       );
     }
 
+    actions.push({
+      label: `Book ${matchedServices[0].name}`,
+      href: '#book',
+      icon: 'calendar',
+      service: matchedServices[0].name,
+    });
     actions.push(...defaultBookingActions);
     if (matchedServices.some((m) => m.caseNote)) {
       actions.push({ label: 'See Real Smiles', href: '#smiles', icon: 'arrow' });
@@ -281,13 +288,13 @@ export function getBotReply(rawInput: string): ChatReply {
   if (asksBooking) {
     return {
       paragraphs: [
-        'Booking a visit is quick! Send us a message on Facebook Messenger with the treatment you need and a day that suits you, or give us a call.',
+        'Booking a visit is quick! Fill in our appointment form on this page with the treatment you need and your preferred day, or reach out directly via Messenger or phone.',
         `Phone: ${site.phone.display} · Email: ${site.email}`,
       ],
       actions: [
+        { label: 'Fill Appointment Form', href: '#book', icon: 'calendar' },
         { label: 'Message on Messenger', href: site.messengerUrl, external: true, icon: 'messenger' },
         { label: `Call ${site.phone.display}`, href: `tel:${site.phone.tel}`, icon: 'phone' },
-        { label: 'Email Us', href: `mailto:${site.email}`, icon: 'mail' },
       ],
       suggestions: ['Where is the clinic located?', 'What services do you offer?', 'What are your clinic hours?'],
     };

@@ -226,6 +226,9 @@ import { welcomeMessage } from '../../data/chatbot';
           } else if (action.href.startsWith('#')) {
             a.dataset.chatAnchor = '';
           }
+          if (action.service) {
+            a.dataset.chatService = action.service;
+          }
           if (action.icon) {
             a.appendChild(createIconSvg(action.icon));
           }
@@ -279,6 +282,11 @@ import { welcomeMessage } from '../../data/chatbot';
     messagesEl.addEventListener('click', (e) => {
       const anchor = (e.target as HTMLElement).closest<HTMLAnchorElement>('[data-chat-anchor]');
       if (anchor) {
+        if (anchor.dataset.chatService) {
+          document.dispatchEvent(
+            new CustomEvent('select-appointment-service', { detail: anchor.dataset.chatService }),
+          );
+        }
         setOpen(false);
       }
     });
