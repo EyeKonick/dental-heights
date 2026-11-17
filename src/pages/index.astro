@@ -9,6 +9,7 @@ import Testimonials from '../components/sections/Testimonials.astro';
 import Location from '../components/sections/Location.astro';
 import Footer from '../components/sections/Footer.astro';
 import Wave from '../components/ui/Wave.astro';
+import ChatWidget from '../components/ui/ChatWidget.astro';
 import { site } from '../data/site';
 ---
 <BaseLayout title={`${site.name} | Dental clinic on Colon St., Cebu City`} description={site.description}>
@@ -26,4 +27,5 @@ import { site } from '../data/site';
     </main>
     <Footer />
   </div>
+  <ChatWidget />
 </BaseLayout>
