@@ -1,0 +1,36 @@
+{
+  "source": "Google reviews",
+  "note": "Real 5-star Google reviews of Dental Heights. Each entry points to its screenshot in src/assets/images/testimonials/ (shown as-is, never edited). `text` is a transcription of the review, used as the image description for screen readers.",
+  "reviews": [
+    {
+      "name": "Irene A.",
+      "image": "review-irene-a.jpg",
+      "text": "Highly recommended! My new fave dental clinic, a place where your confidence starts. Thank you so much Doc Mign and the team for the excellent dental care."
+    },
+    {
+      "name": "Kidgun M.",
+      "image": "review-kidgun-m.jpg",
+      "text": "One of the best dental clinics I've visited! From reception to treatment, everything was smooth and professional. Will definitely return and recommend to others. Thanks Dr. Jade."
+    },
+    {
+      "name": "Marnie S.",
+      "image": "review-marnie-s.jpg",
+      "text": "The staff was very friendly and accommodating. Doc Stella is an expert in her field and is very professional. Highly recommended!"
+    },
+    {
+      "name": "Marvin B.",
+      "image": "review-marvin-b.jpg",
+      "text": "Their doctor works professionally and with passion. I loved their approach and services. Highly recommended."
+    },
+    {
+      "name": "Rock G.",
+      "image": "review-rock-g.jpg",
+      "text": "Friendly doctors and staff. Would recommend."
+    },
+    {
+      "name": "Bea B.",
+      "image": "review-bea-b.jpg",
+      "text": "Highly recommended."
+    }
+  ]
+}

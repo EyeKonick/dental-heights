@@ -1,0 +1,19 @@
+---
+// A section's h2 with an optional one- or two-sentence intro underneath.
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+}
+const { id, title, intro } = Astro.props;
+---
+<header class="heading" data-reveal>
+  <h2 id={id}>{title}</h2>
+  {intro && <p>{intro}</p>}
+</header>
+
+<style>
+  .heading { display: grid; gap: var(--space-4); max-width: 46rem; margin-bottom: var(--space-7); }
+  h2 { font-size: var(--text-xl); font-weight: 600; }
+  p { font-size: var(--text-md); color: var(--ink-soft); max-width: 40rem; }
+</style>

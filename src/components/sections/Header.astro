@@ -1,0 +1,186 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import logo from '../../assets/images/brand/logo.png';
+import { site } from '../../data/site';
+
+const links = [
+  { href: '#services', label: 'Services' },
+  { href: '#about', label: 'About' },
+  { href: '#smiles', label: 'Real smiles' },
+  { href: '#reviews', label: 'Reviews' },
+  { href: '#visit', label: 'Visit us' },
+];
+---
+<!-- The nav floats: it is fixed to the top of the screen at every scroll position. The spacer keeps
+     the page content where it would sit if the bar were in the normal flow. -->
+<div class="nav-spacer" aria-hidden="true"></div>
+<div class="nav-float">
+  <header class="nav container">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="nav__logo" href="#top" aria-label={`${site.name}, back to top`}>
+      <!-- The clinic logo (IMG_2252) as provided, only its white margin trimmed; served as lossless PNG on white. -->
+      <Image src={logo} alt={site.name} height={50} densities={[1, 2, 3]} format="png" loading="eager" />
+    </a>
+
+    <nav class="nav__links" aria-label="Main">
+      {links.map((l) => <a href={l.href} data-nav-link>{l.label}</a>)}
+      <Button variant="call" size="sm" />
+    </nav>
+
+    <!-- Tablets and phones: a Menu button that opens the same links in a panel. Without JavaScript the
+         button is hidden and the links fall back to a plain row (see .no-menu-js below). -->
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path class="nav__icon-open" d="M4 7h16M4 12h16M4 17h16" />
+        <path class="nav__icon-close" d="M6 6l12 12M18 6 6 18" />
+      </svg>
+      <span>Menu</span>
+    </button>
+    <div class="nav__panel" id="nav-panel" hidden>
+      {links.map((l) => <a href={l.href} data-nav-link>{l.label}</a>)}
+      <a class="nav__panel-call" href={`tel:${site.phone.tel}`}>Call {site.phone.display}</a>
+      <a class="nav__panel-call nav__panel-call--msg" href={site.messengerUrl} target="_blank" rel="noopener">Message us on Messenger</a>
+    </div>
+  </header>
+</div>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav__toggle');
+  const panel = document.querySelector<HTMLElement>('#nav-panel');
+
+  if (toggle && panel) {
+    toggle.hidden = false;
+    document.documentElement.classList.add('menu-js');
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      panel.hidden = !open;
+    };
+    setOpen(false);
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    // choosing a link closes the menu; the browser then jumps to the section
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    // a tap or click anywhere outside the bar closes it
+    document.addEventListener('click', (e) => {
+      if (!panel.hidden && !panel.contains(e.target as Node) && !toggle.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    // widening the screen past the menu breakpoint closes it
+    matchMedia('(min-width: 1081px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  }
+
+  // Mark the link of the section currently on screen (aria-current), so the floating nav shows where you are.
+  const navLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
+  const sections = [...new Set(navLinks.map((a) => a.getAttribute('href')))]
+    .map((href) => (href ? document.querySelector<HTMLElement>(href) : null))
+    .filter((el): el is HTMLElement => el !== null);
+  if ('IntersectionObserver' in window && sections.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const id = `#${entry.target.id}`;
+          navLinks.forEach((a) => {
+            if (a.getAttribute('href') === id) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>
+
+<style>
+  /* the space the bar would take in the flow: its 16px top gap plus its 72px height */
+  .nav-spacer { height: calc(var(--space-4) + 72px); }
+  .nav-float {
+    position: fixed; top: var(--space-4); left: 0; right: 0; z-index: 50;
+    pointer-events: none; /* only the bar itself takes clicks, not the empty strip beside it */
+  }
+  .nav {
+    position: relative; pointer-events: auto; height: 72px;
+    background: var(--panel); border-radius: var(--radius-pill);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 26px;
+    box-shadow: var(--shadow-bar), 0 1px 0 rgba(var(--shadow-tint), 0.04);
+  }
+  .nav__logo { display: block; }
+  .nav__logo :global(img) { height: 50px; width: auto; }
+  .nav__links { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: var(--text-nav); }
+
+  /* nav words: a pale pill fades in behind the word on hover, focus, and for the section in view */
+  .nav__links > a:not(.btn), .nav__panel > a {
+    position: relative; isolation: isolate;
+    padding: 12px 16px; border-radius: var(--radius-pill); text-decoration: none; color: var(--ink-soft);
+  }
+  .nav__links > a:not(.btn)::before, .nav__panel > a::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--ground);
+    opacity: 0; transition: opacity var(--dur-hover) var(--ease-heavy);
+  }
+  .nav__links > a[aria-current], .nav__panel > a[aria-current] { color: var(--ink); }
+  .nav__links > a[aria-current]::before, .nav__panel > a[aria-current]::before { opacity: 1; background: var(--brand-tint); }
+  .nav__links > a:not(.btn):focus-visible, .nav__panel > a:focus-visible { color: var(--ink); }
+  .nav__links > a:not(.btn):focus-visible::before, .nav__panel > a:focus-visible::before { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .nav__links > a:not(.btn):hover, .nav__panel > a:hover { color: var(--ink); }
+    .nav__links > a:not(.btn):hover::before, .nav__panel > a:hover::before { opacity: 1; }
+  }
+
+  /* Menu button and panel (tablets and phones) */
+  .nav__toggle {
+    display: none; align-items: center; gap: var(--space-2); margin-left: var(--space-2);
+    height: 48px; padding: 0 20px 0 16px; border: 0; border-radius: var(--radius-pill); cursor: pointer;
+    background: var(--panel); box-shadow: inset 0 0 0 2px var(--brand);
+    font: 600 1rem/1 var(--font-display); color: var(--ink);
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  .nav__toggle svg { width: 22px; height: 22px; }
+  .nav__icon-close { display: none; }
+  .nav__toggle[aria-expanded='true'] .nav__icon-open { display: none; }
+  .nav__toggle[aria-expanded='true'] .nav__icon-close { display: inline; }
+  .nav__toggle[aria-expanded='true'] { background: var(--brand-tint); }
+
+  .nav__panel {
+    position: absolute; right: 10px; top: calc(100% + 10px); width: min(300px, calc(100vw - 2 * var(--gutter)));
+    display: grid; gap: 2px; padding: var(--space-3);
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift);
+    font: 500 1rem/1.2 var(--font-display);
+    animation: menu-in 0.4s var(--ease-heavy) both;
+  }
+  .nav__panel[hidden] { display: none; }
+  .nav__panel > a { min-height: 48px; display: flex; align-items: center; }
+  .nav__panel-call { margin-top: var(--space-2); border-top: 1px solid var(--line); border-radius: 0 !important; color: var(--brand-deep) !important; font-weight: 600; }
+  .nav__panel-call::before { display: none; }
+  .nav__panel-call--msg { margin-top: 0; border-top: 0; }
+  @keyframes menu-in { from { opacity: 0; transform: translate3d(0, -8px, 0); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 1080px) {
+    .nav__links > a:not(.btn) { display: none; }
+    .nav__links { margin-left: auto; }
+    :global(.menu-js) .nav__toggle { display: inline-flex; }
+    /* no JavaScript: no Menu button, so keep the section links visible in a scrolling row instead */
+    :global(html:not(.menu-js)) .nav__links > a:not(.btn) { display: inline-flex; padding: 10px 10px; }
+    :global(html:not(.menu-js)) .nav__links { overflow-x: auto; }
+  }
+  @media (max-width: 640px) {
+    .nav-spacer { height: calc(10px + 60px); }
+    .nav-float { top: 10px; }
+    .nav { height: 60px; padding: 0 6px 0 18px; }
+    .nav__logo :global(img) { height: 38px; }
+    .nav__links :global(.btn) { display: none; }  /* the phone call bar carries the call action */
+    .nav__toggle { height: 46px; }
+    .nav__panel { right: 6px; }
+  }
+</style>

@@ -1,0 +1,102 @@
+{
+  "categories": [
+    {
+      "id": "checkups",
+      "name": "Check-ups & Cleaning",
+      "icon": "search",
+      "summary": "Regular visits that catch problems early."
+    },
+    {
+      "id": "fixing",
+      "name": "Fixing & Filling",
+      "icon": "shield",
+      "summary": "Repair and protect teeth that are decayed or damaged."
+    },
+    {
+      "id": "removing",
+      "name": "Tooth Removal",
+      "icon": "extract",
+      "summary": "When a tooth needs to come out."
+    },
+    {
+      "id": "straightening",
+      "name": "Straightening",
+      "icon": "align",
+      "summary": "Line up crooked or gapped teeth."
+    },
+    {
+      "id": "replacing",
+      "name": "Replacing Teeth",
+      "icon": "replace",
+      "summary": "Fill the gaps left by missing teeth."
+    },
+    {
+      "id": "brightening",
+      "name": "Brightening",
+      "icon": "sun",
+      "summary": "Lighter, more even-looking teeth."
+    }
+  ],
+  "services": [
+    {
+      "name": "Dental consultation",
+      "category": "checkups",
+      "description": "A full look at your teeth and gums, and a clear plan for what, if anything, needs doing."
+    },
+    {
+      "name": "Dental cleaning",
+      "category": "checkups",
+      "description": "Scaling and polishing to lift plaque and tartar that brushing at home can't reach."
+    },
+    {
+      "name": "Fillings (pasta)",
+      "category": "fixing",
+      "description": "Cavities cleaned out and sealed with tooth-coloured filling, so the tooth works and looks whole again."
+    },
+    {
+      "name": "Root canal therapy",
+      "category": "fixing",
+      "description": "Treats an infected or inflamed tooth from the inside, so you can keep it instead of losing it."
+    },
+    {
+      "name": "Jacket crowns",
+      "category": "fixing",
+      "description": "A cap that covers and protects a weak, broken or heavily filled tooth."
+    },
+    {
+      "name": "Tooth extraction",
+      "category": "removing",
+      "description": "Removing a tooth that is too damaged or decayed to save."
+    },
+    {
+      "name": "Wisdom tooth extraction",
+      "category": "removing",
+      "description": "Taking out wisdom teeth that are crowding, aching or coming in at an angle."
+    },
+    {
+      "name": "Braces",
+      "category": "straightening",
+      "description": "Brackets and wires that move teeth into line over time, for a straighter, even bite."
+    },
+    {
+      "name": "Dental implants",
+      "category": "replacing",
+      "description": "A fixed replacement for a missing tooth, anchored in the jaw like a natural root."
+    },
+    {
+      "name": "Dentures",
+      "category": "replacing",
+      "description": "Removable teeth made to fit your mouth, replacing several or all missing teeth."
+    },
+    {
+      "name": "Teeth whitening",
+      "category": "brightening",
+      "description": "Lightens stains and discolouration for a brighter shade of your own teeth."
+    },
+    {
+      "name": "Direct veneers",
+      "category": "brightening",
+      "description": "Tooth-coloured composite shaped onto the front of teeth to close gaps and reshape chips."
+    }
+  ]
+}

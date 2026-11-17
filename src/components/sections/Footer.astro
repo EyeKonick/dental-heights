@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import logo from '../../assets/images/brand/logo.png';
+import { site } from '../../data/site';
+
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container footer__card">
+    <div class="footer__brand">
+      <!-- The clinic logo (IMG_2252) as provided, on the white footer card. -->
+      <Image src={logo} alt={site.name} height={72} densities={[1, 2, 3]} format="png" loading="lazy" />
+      <p class="footer__tagline">{site.tagline}</p>
+    </div>
+    <div class="footer__contact">
+      <address>
+        {site.address.unit}, {site.address.building}<br />
+        {site.address.street}, {site.address.city} {site.address.postalCode}
+      </address>
+      <a class="footer__phone" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
+    </div>
+    <div class="footer__cta">
+      <Button variant="call" href={site.messengerUrl} icon="messenger" external>Message us on Messenger</Button>
+    </div>
+    <p class="footer__legal">© {year} {site.name}. Every photo on this page is of our own clinic, patients and team.</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--navy-band); padding-block: var(--space-7) var(--space-5); }
+  .footer__card {
+    background: var(--panel); border-radius: var(--radius-xl); padding: clamp(28px, 4vw, 56px);
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-6) var(--space-5); align-items: center;
+  }
+  .footer__brand { grid-column: 1 / span 5; display: grid; gap: var(--space-4); }
+  .footer__brand :global(img) { height: 72px; width: auto; }
+  .footer__tagline { font: 600 var(--text-md)/1.35 var(--font-display); max-width: 30ch; }
+  .footer__contact { grid-column: 6 / span 4; display: grid; gap: var(--space-2); color: var(--ink-soft); }
+  .footer__phone { font: 700 var(--text-lg)/1.2 var(--font-display); color: var(--ink); text-decoration: none; font-variant-numeric: tabular-nums; }
+  .footer__phone:hover { color: var(--brand-deep); }
+  .footer__cta { grid-column: 10 / span 3; justify-self: end; }
+  .footer__legal { grid-column: 1 / -1; padding-top: var(--space-5); border-top: 1px solid var(--ground-alt); font-size: var(--text-xs); color: var(--ink-soft); }
+
+  @media (max-width: 1080px) {
+    .footer__card { grid-template-columns: 1fr 1fr; }
+    .footer__brand { grid-column: 1 / -1; }
+    .footer__contact { grid-column: 1; }
+    .footer__cta { grid-column: 2; }
+  }
+  @media (max-width: 640px) {
+    .footer__card { grid-template-columns: 1fr; border-radius: var(--radius-lg); }
+    .footer__contact, .footer__cta { grid-column: 1; justify-self: stretch; }
+    .footer__cta :global(.btn) { width: 100%; }
+    .footer__brand :global(img) { height: 56px; }
+  }
+</style>

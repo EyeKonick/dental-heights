@@ -1,0 +1,71 @@
+---
+// One service category: icon badge, name, a one-line summary, then its services as a check list
+// (the same blue check marks the clinic uses on its flyer).
+import Icon from './Icon.astro';
+
+interface Service {
+  name: string;
+  description: string;
+}
+interface Props {
+  id: string;
+  name: string;
+  summary: string;
+  icon: 'search' | 'shield' | 'extract' | 'align' | 'replace' | 'sun';
+  services: Service[];
+}
+const { id, name, summary, icon, services } = Astro.props;
+---
+<article class="category lift" id={`services-${id}`} aria-labelledby={`cat-${id}`} data-reveal>
+  <header class="category__head">
+    <span class="category__icon"><Icon name={icon} /></span>
+    <div>
+      <h3 id={`cat-${id}`}>{name}</h3>
+      <p class="category__summary">{summary}</p>
+    </div>
+  </header>
+  <ul class="category__list" data-stagger>
+    {services.map((s) => (
+      <li data-reveal>
+        <Icon name="check" class="category__check" />
+        <div>
+          <h4>{s.name}</h4>
+          <p>{s.description}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</article>
+
+<style>
+  .category {
+    display: flex; flex-direction: column; gap: var(--space-5);
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: var(--space-6); box-shadow: var(--shadow-card);
+    scroll-margin-top: var(--space-6);
+  }
+  .category::before {
+    content: ''; position: absolute; inset: 0 var(--space-6) auto; height: 4px; border-radius: 0 0 4px 4px;
+    background: var(--brand);
+  }
+
+  .category__head { display: flex; gap: var(--space-4); align-items: flex-start; }
+  .category__icon {
+    flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: var(--radius-md);
+    background: var(--brand-tint); color: var(--brand-deep);
+  }
+  .category__icon :global(svg) { width: 26px; height: 26px; }
+  h3 { font-size: var(--text-lg); font-weight: 600; color: var(--ink); }
+  .category__summary { margin-top: 4px; font-size: var(--text-sm); color: var(--ink-soft); }
+
+  .category__list { display: grid; gap: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  .category__list li { display: grid; grid-template-columns: 22px 1fr; gap: var(--space-3); align-items: start; }
+  .category__list :global(.category__check) { width: 22px; height: 22px; color: var(--brand-deep); margin-top: 1px; }
+  h4 { font-size: var(--text-base); font-weight: 600; line-height: 1.35; }
+  .category__list p { margin-top: 2px; font-size: var(--text-sm); line-height: 1.55; color: var(--ink-soft); }
+
+  @media (max-width: 640px) {
+    .category { padding: var(--space-5); }
+    .category::before { inset: 0 var(--space-5) auto; }
+  }
+</style>

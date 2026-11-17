@@ -1,0 +1,113 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+import ServiceCard from '../ui/ServiceCard.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import data from '../../data/services.json';
+import { site } from '../../data/site';
+
+type CategoryIcon = 'search' | 'shield' | 'extract' | 'align' | 'replace' | 'sun';
+
+const groups = data.categories
+  .map((category) => ({
+    ...category,
+    icon: category.icon as CategoryIcon,
+    services: data.services.filter((s) => s.category === category.id),
+  }))
+  .filter((g) => g.services.length > 0);
+---
+<section class="services section" id="services" aria-labelledby="services-title">
+  <div class="container">
+    <div class="services__top">
+      <SectionHeading
+        id="services-title"
+        title={`Our ${data.services.length} dental services`}
+        intro="Grouped by what each treatment does for you. Jump to a group, or call or message us and we'll point you to the right one."
+      />
+      <nav class="services__jump" aria-label="Service groups" data-stagger>
+        {groups.map((g) => (
+          <a href={`#services-${g.id}`} data-reveal>
+            <Icon name={g.icon} />
+            <span>{g.name}</span>
+            <span class="services__count">{g.services.length}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <div class="services__grid" data-stagger>
+      {groups.map((g) => (
+        <ServiceCard id={g.id} name={g.name} summary={g.summary} icon={g.icon} services={g.services} />
+      ))}
+    </div>
+
+    <aside class="services__help" data-reveal aria-labelledby="services-help-title">
+      <div>
+        <h3 id="services-help-title">Not sure which treatment you need?</h3>
+        <p>Start with a consultation. We'll check your teeth first and explain your options.</p>
+      </div>
+      <div class="services__actions">
+        <Button variant="call" />
+        <Button variant="call" href={site.messengerUrl} icon="messenger" external>Message us</Button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  /* the ice-blue of the hero melts into this section's white instead of stopping at a hard edge */
+  .services { background: linear-gradient(to bottom, var(--ground) 0, var(--panel) clamp(140px, 16vw, 260px)); }
+  .services__top { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-5); align-items: end; margin-bottom: var(--space-7); }
+  .services__top :global(.heading) { grid-column: 1 / span 6; margin-bottom: 0; }
+
+  .services__jump { grid-column: 7 / span 6; display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
+  .services__jump a {
+    position: relative; isolation: isolate;
+    display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-3) 0 var(--space-4);
+    border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line);
+    font: 500 var(--text-sm)/1 var(--font-display); color: var(--ink); text-decoration: none;
+  }
+  /* a sky tint and a brand-blue ring fade in on hover and focus */
+  .services__jump a::before {
+    content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; pointer-events: none;
+    background: var(--brand-tint); box-shadow: inset 0 0 0 1px var(--brand);
+    opacity: 0; transition: opacity var(--dur-hover) var(--ease-heavy);
+  }
+  .services__jump a:focus-visible::before { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .services__jump a:hover { translate: 0 -2px; }
+    .services__jump a:hover::before { opacity: 1; }
+  }
+  .services__jump :global(svg) { width: 18px; height: 18px; color: var(--brand-deep); }
+  .services__count {
+    display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: var(--radius-pill);
+    background: var(--panel); font-size: var(--text-xs); color: var(--brand-deep);
+  }
+
+  .services__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); align-items: stretch; }
+
+  .services__help {
+    margin-top: var(--space-6); display: flex; align-items: center; justify-content: space-between; gap: var(--space-5);
+    padding: var(--space-6) clamp(24px, 4vw, 48px); border-radius: var(--radius-lg);
+    background: var(--brand-tint); border: 1px solid var(--line);
+  }
+  .services__help h3 { font-size: var(--text-lg); font-weight: 600; }
+  .services__help p { margin-top: 4px; color: var(--ink-soft); }
+  .services__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); flex: none; }
+
+  @media (max-width: 1080px) {
+    .services__top { grid-template-columns: 1fr; }
+    .services__top :global(.heading), .services__jump { grid-column: 1; }
+    .services__jump { justify-content: flex-start; }
+    .services__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .services__help { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 640px) {
+    .services__grid { grid-template-columns: 1fr; gap: var(--space-4); }
+    .services__jump { display: grid; grid-template-columns: 1fr 1fr; }
+    .services__jump a { padding: 0 var(--space-2) 0 var(--space-3); font-size: var(--text-xs); }
+    .services__count { margin-left: auto; }
+    .services__actions { width: 100%; }
+    .services__actions :global(.btn) { width: 100%; }
+  }
+</style>

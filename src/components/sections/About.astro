@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import teamMurals from '../../assets/images/team/team-mountain-murals.jpg';
+import { site } from '../../data/site';
+---
+<section class="about section" id="about" aria-labelledby="about-title">
+  <div class="container about__grid" data-stagger>
+    <figure class="about__photo" data-reveal>
+      <div class="about__frame lift">
+        <div class="about__stack" aria-hidden="true"></div>
+        <div class="about__clip zoom">
+        <Image
+        src={teamMurals}
+        alt="The Dental Heights team in tan scrubs, standing in front of the clinic's alpine mountain murals"
+        widths={[480, 720, 960, 1111]}
+        sizes="(max-width: 1080px) 100vw, 50vw"
+        format="webp"
+        loading="lazy"
+        />
+        </div>
+      </div>
+      <figcaption>The Dental Heights team at Iconique Center, Cebu City</figcaption>
+    </figure>
+
+    <div class="about__text" data-reveal="fade" data-stagger>
+      <h2 id="about-title" data-reveal>A clinic with a view of the peak</h2>
+      <blockquote data-reveal>
+        <p>“{site.tagline}”</p>
+      </blockquote>
+      <!-- the one peak motif on the page: an authored ridge line under the tagline -->
+      <svg class="ridge" viewBox="0 0 320 40" aria-hidden="true" data-reveal="fade">
+        <path d="M0 38 L46 22 L70 30 L112 8 L138 24 L162 16 L196 34 L228 12 L246 20 L280 4 L320 26" />
+      </svg>
+      <p data-reveal>
+        That line is what we're here for. Dental Heights is a dental clinic on the 2nd floor of {site.address.building} on
+        {site.address.street}, {site.address.city}, and alpine mountain murals cover our treatment-room walls: the same
+        peaks our tagline talks about.
+      </p>
+      <p data-reveal>
+        Come in for a check-up, a cleaning or a filling, or ask us about braces, implants and veneers. Have a question
+        first? Call or message us and we'll answer it.
+      </p>
+      <div class="about__actions" data-reveal>
+        <Button variant="call" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* the posts' bright sky-blue field; navy text holds 5:1 on it, white text would not */
+  .about { background: var(--brand); color: var(--ink); }
+  .about__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-5); align-items: center; }
+
+  .about__photo { grid-column: 1 / span 6; margin: 0; }
+  .about__frame { position: relative; isolation: isolate; border-radius: var(--radius-xl); }
+  .about__clip { border-radius: var(--radius-xl); box-shadow: var(--shadow-panel); }
+  .about__photo :global(img) { width: 100%; aspect-ratio: 1111 / 717; object-fit: cover; }
+  .about__stack { position: absolute; inset: 14px -14px -14px 14px; background: var(--panel); border-radius: var(--radius-xl); transform: rotate(1.4deg); z-index: -1; }
+  .about__photo figcaption { margin-top: var(--space-6); font-size: var(--text-sm); font-weight: 500; color: var(--ink); }
+
+  .about__text { grid-column: 8 / span 5; display: grid; gap: var(--space-4); }
+  .about__text h2 { font-size: var(--text-xl); font-weight: 600; }
+  blockquote { margin: var(--space-2) 0 0; }
+  blockquote p { font: 600 var(--text-lg)/1.35 var(--font-display); color: var(--ink); max-width: 24ch; }
+  .ridge { width: min(320px, 100%); height: 40px; margin-bottom: var(--space-2); }
+  .ridge path { fill: none; stroke: var(--panel); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .about__text > p { color: var(--ink); max-width: 52ch; }
+  .about__actions { margin-top: var(--space-3); }
+
+  @media (max-width: 1080px) {
+    .about__grid { grid-template-columns: 1fr; row-gap: var(--space-8); }
+    .about__photo, .about__text { grid-column: 1; }
+  }
+  @media (max-width: 640px) {
+    .about__frame, .about__clip { border-radius: var(--radius-lg); }
+    .about__stack { inset: 10px -6px -10px 10px; border-radius: var(--radius-lg); }
+    .about__actions :global(.btn) { width: 100%; }
+  }
+</style>

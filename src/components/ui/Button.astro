@@ -1,0 +1,76 @@
+---
+// The page's two action buttons, reused for every call to action:
+//   book  the yellow Book Now pill: used once on the page, in the hero
+//   call  the white pill with a sky-blue ring (tap to call, Messenger, directions, every other action)
+import Icon from './Icon.astro';
+import { site } from '../../data/site';
+
+interface Props {
+  variant?: 'book' | 'call';
+  href?: string;
+  icon?: 'phone' | 'calendar' | 'messenger' | 'directions' | 'mail' | 'arrow';
+  size?: 'md' | 'sm';
+  external?: boolean;
+  class?: string;
+  label?: string;
+  /** set to a reveal style ('' or 'fade') to fade the button in on scroll */
+  reveal?: '' | 'fade';
+}
+
+const {
+  variant = 'book',
+  href = variant === 'book' ? site.bookingUrl : `tel:${site.phone.tel}`,
+  icon = variant === 'book' ? 'calendar' : 'phone',
+  size = 'md',
+  external = false,
+  class: className,
+  label,
+  reveal,
+} = Astro.props;
+---
+<a
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+  aria-label={label}
+  data-reveal={reveal}
+  {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+>
+  {variant === 'call' && <Icon name={icon} />}
+  <span><slot>{variant === 'book' ? 'Book Now' : `Call ${site.phone.display}`}</slot></span>
+  {variant === 'book' && <Icon name={icon} />}
+</a>
+
+<style>
+  .btn {
+    position: relative; isolation: isolate;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    height: 56px; padding: 0 28px; border-radius: var(--radius-pill);
+    font: 600 1.0625rem/1 var(--font-display); letter-spacing: 0; text-decoration: none; white-space: nowrap;
+    transition: translate var(--dur-hover) var(--ease-heavy);
+  }
+  /* ::before tints the fill, ::after carries the glow; both only ever fade (opacity) */
+  .btn::before, .btn::after {
+    content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+    opacity: 0; transition: opacity var(--dur-hover) var(--ease-heavy);
+  }
+  .btn :global(svg) { width: 20px; height: 20px; flex: none; }
+  .btn--sm { height: 48px; padding: 0 22px; font-size: 1rem; }
+
+  /* Book Now: the one yellow pill; on hover a soft, warm glow rises around it */
+  .btn--book { background: var(--sun); color: var(--ink); box-shadow: 0 10px 22px -12px rgba(190, 150, 20, 0.55); }
+  .btn--book::before { background: var(--sun-deep); }
+  .btn--book::after { box-shadow: 0 0 0 6px rgba(245, 220, 92, 0.35), 0 16px 34px -10px rgba(214, 170, 20, 0.6); }
+  .btn--book:focus-visible { outline-color: var(--ink); }
+
+  /* Call and secondary pills: a gentle sky-blue tint washes in */
+  .btn--call { background: var(--panel); color: var(--ink); box-shadow: inset 0 0 0 2px var(--brand); }
+  .btn--call::before { background: var(--brand-tint); }
+  .btn--call::after { box-shadow: 0 12px 26px -14px rgba(var(--shadow-tint), 0.45); }
+
+  .btn:focus-visible::before, .btn:focus-visible::after { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { translate: 0 -2px; }
+    .btn:hover::before, .btn:hover::after { opacity: 1; }
+  }
+  .btn:active { translate: 0 0; transition-duration: 120ms; }
+</style>

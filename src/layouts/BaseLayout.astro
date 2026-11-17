@@ -1,0 +1,116 @@
+---
+import { getImage } from 'astro:assets';
+import '../styles/global.css';
+import logo from '../assets/images/brand/logo.png';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+
+const base = Astro.site ?? new URL(site.url);
+const canonical = new URL(Astro.url.pathname, base).href;
+const ogImage = new URL('/og-image.jpg', base).href;
+const logoAsset = await getImage({ src: logo, format: 'png' });
+const logoUrl = new URL(logoAsset.src, base).href;
+
+// schema.org Dentist (a LocalBusiness type). No ratings, reviews or opening hours: none were provided.
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dentist',
+  name: site.name,
+  slogan: site.tagline,
+  description: site.description,
+  url: base.href,
+  telephone: site.phone.tel,
+  email: site.email,
+  logo: logoUrl,
+  image: ogImage,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${site.address.unit}, ${site.address.building}, ${site.address.street}`,
+    addressLocality: site.address.city,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
+  hasMap: site.mapsUrl,
+  sameAs: [site.facebookUrl],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#e9f6ff" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_PH" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Dental Heights team in white coats, smiling and posing" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <!-- Reveal guard: hide reveal targets only while the reveal script is expected. If it has not reported
+         in after 2.5s (blocked or failed), the class is removed and everything shows. Reduced-motion users
+         never get the class. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('js');
+        setTimeout(function () { if (!d.classList.contains('reveal-ready')) d.classList.remove('js'); }, 2500);
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Scroll reveals: each [data-reveal] block fades up once, the first time it enters the viewport.
+      // Siblings inside a [data-stagger] container are numbered (--i, capped at 5) so they arrive in turn.
+      const root = document.documentElement;
+      if (root.classList.contains('js')) {
+        document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((group) => {
+          let i = 0;
+          group.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+            if (el.parentElement?.closest('[data-stagger]') === group) el.style.setProperty('--i', String(Math.min(i++, 5)));
+          });
+        });
+        const blocks = document.querySelectorAll<HTMLElement>('[data-reveal]');
+        if (!('IntersectionObserver' in window)) {
+          blocks.forEach((el) => el.classList.add('is-in'));
+        } else {
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            },
+            { rootMargin: '0px 0px -10% 0px', threshold: 0.12 }
+          );
+          blocks.forEach((el) => io.observe(el));
+        }
+        root.classList.add('reveal-ready');
+      }
+    </script>
+  </body>
+</html>

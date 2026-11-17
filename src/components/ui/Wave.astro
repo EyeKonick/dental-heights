@@ -1,0 +1,24 @@
+---
+// The wave from the clinic's posts: a yellow ribbon peeking above a sky-blue wave.
+// Placed at the top edge of a blue band (or flipped at its bottom edge).
+interface Props {
+  flip?: boolean;
+  from?: string; // the colour of the section the wave grows out of
+}
+const { flip = false, from = 'var(--ground)' } = Astro.props;
+---
+<div class:list={['wave', { 'wave--flip': flip }]} style={`--wave-from: ${from}`} aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path class="wave__sun" d="M0 62 C 240 18, 480 18, 720 52 S 1200 104, 1440 46 V120 H0Z" />
+    <path class="wave__sky" d="M0 86 C 260 40, 520 46, 760 76 S 1220 120, 1440 70 V120 H0Z" />
+  </svg>
+</div>
+
+<style>
+  .wave { background: var(--wave-from); line-height: 0; margin-bottom: -1px; position: relative; }
+  .wave svg { display: block; width: 100%; height: clamp(48px, 7vw, 110px); }
+  .wave__sun { fill: var(--sun); }
+  .wave__sky { fill: var(--brand); }
+  .wave--flip { margin-bottom: 0; margin-top: -1px; }
+  .wave--flip svg { transform: scaleY(-1); }
+</style>

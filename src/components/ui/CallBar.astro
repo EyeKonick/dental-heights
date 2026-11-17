@@ -1,0 +1,25 @@
+---
+// Phone-only action bar fixed to the bottom of the screen: tap to call beside Messenger.
+// NOT CURRENTLY ON THE PAGE: hidden at the client's request because the Menu already offers Call and
+// Messenger. To bring it back, import it in src/pages/index.astro and place <CallBar /> after </div>.
+import { site } from '../../data/site';
+import Button from './Button.astro';
+---
+<nav class="callbar" aria-label="Quick actions">
+  <Button variant="call" size="sm">Tap to call</Button>
+  <Button variant="call" size="sm" href={site.messengerUrl} icon="messenger" external>Messenger</Button>
+</nav>
+
+<style>
+  .callbar { display: none; }
+  @media (max-width: 640px) {
+    .callbar {
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2);
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.97); border-top: 1px solid var(--ground-alt);
+    }
+    .callbar :global(.btn) { width: 100%; padding: 0 12px; }
+    :global(body) { padding-bottom: 76px; }  /* keeps the page end clear of the bar */
+  }
+</style>

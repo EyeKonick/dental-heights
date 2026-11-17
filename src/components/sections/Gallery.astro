@@ -1,0 +1,146 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeading from '../ui/SectionHeading.astro';
+import clinicInAction from '../../assets/images/clinic/clinic-in-action.png';
+import teamLogoSign from '../../assets/images/team/team-logo-sign.jpg';
+import teamMurals from '../../assets/images/team/team-mountain-murals.jpg';
+import { cases } from '../../data/cases';
+
+// Case photos are small crops from the clinic's posts: they are shown at or below their own width.
+const [featured, ...rest] = cases;
+
+const clinicPhotos = [
+  {
+    src: clinicInAction,
+    alt: 'Team members in white coats and teal scrubs treating patients in the clinic, with the mountain murals on the wall',
+    caption: 'Treatment in progress at the Dental Heights clinic',
+    position: '42% 50%',
+  },
+  {
+    src: teamLogoSign,
+    alt: 'The Dental Heights team in white coats beneath the clinic\'s illuminated logo sign',
+    caption: 'The Dental Heights clinical team',
+    position: '52% 40%',
+  },
+  {
+    src: teamMurals,
+    alt: 'The Dental Heights team in tan scrubs in front of the alpine mountain murals',
+    caption: 'Our team in the alpine-mural treatment area',
+    position: '50% 30%',
+  },
+];
+---
+<section class="gallery section" id="smiles" aria-labelledby="smiles-title">
+  <div class="container">
+    <SectionHeading
+      id="smiles-title"
+      title="Before and after: real patient results"
+      intro="Each case below is one patient treated at Dental Heights. The photos come from the clinic's own records."
+    />
+
+    <article class="case case--featured lift" aria-labelledby={`case-${featured.id}`} data-reveal>
+      <div class="case__text">
+        <h3 id={`case-${featured.id}`}>{featured.title}</h3>
+        <ul class="case__tags">{featured.treatments.map((t) => <li>{t}</li>)}</ul>
+        <p>{featured.note}</p>
+      </div>
+      <ol class="case__photos case__photos--row" data-stagger>
+        {featured.photos.map((p) => (
+          <li class="zoom zoom--subtle" data-reveal="fade">
+            <Image src={p.src} alt={p.alt} widths={[367]} sizes="(max-width: 640px) 100vw, 367px" format="webp" loading="lazy" />
+            <span class="visually-hidden">{p.stage}</span>
+          </li>
+        ))}
+      </ol>
+    </article>
+
+    <div class="cases" data-stagger>
+      {rest.map((c) => (
+        <article class="case lift" aria-labelledby={`case-${c.id}`} data-reveal>
+          <div class="case__text">
+            <h3 id={`case-${c.id}`}>{c.title}</h3>
+            <ul class="case__tags">{c.treatments.map((t) => <li>{t}</li>)}</ul>
+            <p>{c.note}</p>
+          </div>
+          <ol class:list={['case__photos', { 'case__photos--grid': c.photos.length > 2 }]}>
+            {c.photos.map((p) => (
+              <li class="zoom zoom--subtle">
+                <Image src={p.src} alt={p.alt} widths={[p.src.width]} sizes={`(max-width: 640px) 100vw, ${p.src.width}px`} format="webp" loading="lazy" />
+                {c.labelled ? <span class="visually-hidden">{p.stage}</span> : <span class="case__stage">{p.stage}</span>}
+              </li>
+            ))}
+          </ol>
+        </article>
+      ))}
+    </div>
+
+    <div class="clinic">
+      <h3 class="clinic__title" data-reveal>Inside the clinic</h3>
+      <div class="clinic__grid" data-stagger>
+        {clinicPhotos.map((p) => (
+          <figure class="clinic__photo" data-reveal>
+            <div class="clinic__frame lift">
+              <div class="clinic__clip zoom">
+              <Image src={p.src} alt={p.alt} widths={[420, 640, 840, Math.min(p.src.width, 1100)]} sizes="(max-width: 640px) 100vw, (max-width: 1080px) 50vw, 33vw" format="webp" loading="lazy" style={`object-position: ${p.position}`} />
+              </div>
+            </div>
+            <figcaption>{p.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .case {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: var(--space-6); box-shadow: var(--shadow-card);
+    display: grid; gap: var(--space-5); align-content: start;
+  }
+  .case h3 { font-size: var(--text-lg); font-weight: 600; }
+  .case__text { display: grid; gap: var(--space-3); align-content: start; }
+  .case__text p { color: var(--ink-soft); max-width: 52ch; }
+  .case__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .case__tags li {
+    font: 500 var(--text-xs)/1 var(--font-display); color: var(--brand-deep);
+    background: var(--brand-tint); border-radius: var(--radius-pill); padding: 7px 12px;
+  }
+
+  .case__photos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .case__photos li { position: relative; border-radius: var(--radius-sm); }
+  .case__photos :global(img) { width: 100%; height: auto; border-radius: var(--radius-sm); background: var(--ground); }
+  .case__stage {
+    position: absolute; left: var(--space-2); top: var(--space-2);
+    font: 600 var(--text-xs)/1 var(--font-display); color: var(--ink); background: var(--panel);
+    border-radius: var(--radius-pill); padding: 6px 10px; box-shadow: var(--shadow-soft);
+  }
+
+  .case--featured { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); align-items: center; gap: var(--space-6); margin-bottom: var(--space-5); border-color: var(--brand); }
+  .case__photos--row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+
+  .clinic { margin-top: var(--space-8); }
+  .clinic__title { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-5); }
+  .clinic__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+  .clinic__photo { margin: 0; }
+  .clinic__frame { border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+  .clinic__clip { border-radius: inherit; }
+  .clinic__frame :global(img) { display: block; width: 100%; aspect-ratio: 4 / 3; height: auto; object-fit: cover; }
+  .clinic__photo figcaption { margin-top: var(--space-3); font-size: var(--text-sm); font-weight: 500; color: var(--ink-soft); }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 1080px) {
+    .case--featured { grid-template-columns: 1fr; }
+    .cases { grid-template-columns: 1fr; }
+    .clinic__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .case { padding: var(--space-5); }
+    .case__photos, .case__photos--row { grid-template-columns: 1fr; }
+    .case__photos--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .clinic__grid { grid-template-columns: 1fr; }
+  }
+</style>

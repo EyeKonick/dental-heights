@@ -1,0 +1,83 @@
+---
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { site } from '../../data/site';
+---
+<section class="visit section" id="visit" aria-labelledby="visit-title">
+  <div class="container visit__grid" data-stagger>
+    <div class="visit__where" data-reveal>
+      <h2 id="visit-title">Find us one floor up on Colon St.</h2>
+      <address class="visit__address">
+        <span class="visit__unit">{site.address.unit}</span>
+        <span>{site.address.building}, {site.address.street}</span>
+        <span>{site.address.city} {site.address.postalCode}</span>
+      </address>
+      <p class="visit__hours"><Icon name="clock" />{site.hoursNote}</p>
+      <div class="visit__actions" data-stagger>
+        <Button variant="call" href={site.mapsUrl} icon="directions" external reveal="">Get Directions</Button>
+      </div>
+    </div>
+
+    <div class="visit__bookwrap" data-reveal>
+      <div class="visit__stack" aria-hidden="true"></div>
+      <div class="visit__book" id="book">
+      <h2>Book your visit</h2>
+      <p>Send us a message with the treatment you need and a day that suits you, or give us a call.</p>
+      <div class="visit__actions visit__contact" data-stagger>
+        <Button variant="call" href={site.messengerUrl} icon="messenger" external reveal="">Message us on Messenger</Button>
+        <Button variant="call" reveal="" />
+        <ul class="visit__links">
+        <li data-reveal>
+          <a class="text-link" href={`mailto:${site.email}`}><Icon name="mail" /><span>{site.email}</span></a>
+        </li>
+        <li data-reveal>
+          <a class="text-link" href={site.facebookUrl} target="_blank" rel="noopener"><Icon name="facebook" /><span>Dental Heights on Facebook</span></a>
+        </li>
+        </ul>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-5); align-items: stretch; }
+
+  .visit__where {
+    grid-column: 1 / span 6; display: flex; flex-direction: column; gap: var(--space-5);
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-xl);
+    padding: clamp(24px, 4vw, 48px); box-shadow: var(--shadow-card);
+  }
+  .visit__where h2 { font-size: var(--text-xl); font-weight: 600; max-width: 16ch; }
+  .visit__address { display: grid; gap: 2px; font: 600 var(--text-lg)/1.3 var(--font-display); }
+  .visit__unit { color: var(--brand-deep); }
+  .visit__hours { display: flex; align-items: center; gap: var(--space-2); color: var(--ink-soft); }
+  .visit__hours :global(svg) { width: 20px; height: 20px; color: var(--brand-deep); }
+  .visit__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .visit__book {
+    position: relative; height: 100%; background: var(--navy-band); color: var(--panel); border-radius: var(--radius-xl); padding: clamp(24px, 4vw, 48px);
+    display: flex; flex-direction: column; gap: var(--space-5); box-shadow: var(--shadow-panel);
+  }
+  .visit__bookwrap { grid-column: 7 / span 6; position: relative; isolation: isolate; }
+  .visit__stack { position: absolute; inset: -12px 10px 12px -10px; background: var(--brand); border-radius: var(--radius-xl); transform: rotate(-1.4deg); z-index: -1; }
+  .visit__book h2 { font-size: var(--text-xl); font-weight: 600; }
+  .visit__book > p { color: var(--on-navy-soft); max-width: 44ch; }
+  .visit__links { display: grid; flex-basis: 100%; margin-top: var(--space-2); gap: 2px; padding-top: var(--space-4); border-top: 1px solid rgba(255, 255, 255, 0.18); }
+  .visit__links .text-link { color: var(--panel); }
+  .visit__links .text-link :global(svg) { color: var(--brand); }
+  .visit__links .text-link > span::after { background: var(--panel); }
+  .visit__book :global(.btn--call) { box-shadow: none; }
+  .visit__book :global(:focus-visible) { outline-color: var(--sun); }
+  .visit__links .text-link { font-weight: 500; overflow-wrap: anywhere; }
+
+  @media (max-width: 1080px) {
+    .visit__grid { grid-template-columns: 1fr; }
+    .visit__where, .visit__bookwrap { grid-column: 1; }
+  }
+  @media (max-width: 640px) {
+    .visit__book, .visit__stack { border-radius: var(--radius-lg); }
+    .visit__stack { inset: -8px 6px 8px -6px; }
+    .visit__actions :global(.btn) { width: 100%; }
+  }
+</style>

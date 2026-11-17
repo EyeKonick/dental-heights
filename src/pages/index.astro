@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/sections/Header.astro';
+import Hero from '../components/sections/Hero.astro';
+import Services from '../components/sections/Services.astro';
+import About from '../components/sections/About.astro';
+import Gallery from '../components/sections/Gallery.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import Location from '../components/sections/Location.astro';
+import Footer from '../components/sections/Footer.astro';
+import Wave from '../components/ui/Wave.astro';
+import { site } from '../data/site';
+---
+<BaseLayout title={`${site.name} | Dental clinic on Colon St., Cebu City`} description={site.description}>
+  <div id="top">
+    <Header />
+    <main id="main">
+      <Hero />
+      <Services />
+      <Wave from="var(--panel)" />
+      <About />
+      <Wave flip from="var(--ground)" />
+      <Gallery />
+      <Testimonials />
+      <Location />
+    </main>
+    <Footer />
+  </div>
+</BaseLayout>
